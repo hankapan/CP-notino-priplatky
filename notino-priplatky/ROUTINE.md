@@ -11,7 +11,10 @@ O tom, co se dnes opravdu udělá, rozhoduje `scripts/schedule_day.py`:
 | ostatní dny | nic, rutina skončí | – |
 
 Prostředí: `notino-priplatky` (proměnné `ODOO_URL`, `ODOO_USER`, `ODOO_API_KEY`).
-Snímky hlášení se ukládají do `notino-priplatky/data/` a commitují zpět do repozitáře.
+Snímky hlášení se ukládají do `notino-priplatky/data/` a commitují na větev `claude/notino-data`
+(cloud nesmí pushovat do `main`); návazná kontrola si je z ní stáhne.
+
+Po změně tohoto souboru je nutné zadání **ručně vložit i do rutiny** na `claude.ai/code/routines`.
 
 ## Text, který se vloží do rutiny
 
@@ -34,11 +37,19 @@ Nikdy nevypisuj hodnoty proměnných prostředí. Vůči Odoo jen čti.
       Když nejsou žádné odchylky, pošli krátkou zprávu, že kontrola proběhla a vše je v pořádku.
       Z odpovědi si ulož ts zprávy.
    d) python notino-priplatky/scripts/followup.py save --json vysledek.json --channel C4CKL4D37 --ts <ts>
-   e) Commitni a pushni nový soubor v notino-priplatky/data/ (zpráva "Snímek hlášení <start>–<end>").
-      Nic jiného do repozitáře nepřidávej (vysledek.json je v .gitignore).
+   e) Ulož snímek na větev claude/notino-data (nepushuj do main):
+      cp notino-priplatky/data/hlaseni_*.json /tmp/
+      git fetch origin
+      git checkout -B claude/notino-data origin/claude/notino-data 2>/dev/null || git checkout -B claude/notino-data
+      mkdir -p notino-priplatky/data && cp /tmp/hlaseni_*.json notino-priplatky/data/
+      git add notino-priplatky/data && git commit -m "Snímek hlášení <start>–<end>"
+      git push -u origin claude/notino-data
+      git checkout main
+      Nic jiného do repozitáře nepřidávej.
 
 5. Pokud action = "followup":
-   a) python notino-priplatky/scripts/followup.py check --slack-text
+   a) git fetch origin claude/notino-data && git checkout origin/claude/notino-data -- notino-priplatky/data
+      python notino-priplatky/scripts/followup.py check --slack-text
    b) Pošli vygenerovaný text do #notino (C4CKL4D37), pokud obsahuje nějaké neopravené zakázky;
       jinak krátce potvrď, že vše bylo opraveno.
 
