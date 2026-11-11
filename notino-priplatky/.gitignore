@@ -1,0 +1,6 @@
+# prihlasovaci udaje nikdy
+.env
+*.env
+# pracovni vystupy jednoho behu
+vysledek.json
+kontrola*.csv

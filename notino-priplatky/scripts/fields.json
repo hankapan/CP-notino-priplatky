@@ -1,0 +1,34 @@
+{
+  "job_model": "project.task",
+  "product_model": "cp.job.product",
+  "user_model": "res.users",
+  "job_filter": [
+    [
+      "cp_is_notino",
+      "=",
+      true
+    ],
+    [
+      "cp_workflow_status",
+      "=",
+      "completed"
+    ]
+  ],
+  "job_no_field": "cp_job_no",
+  "ordered_field": "cp_close_date",
+  "ordered_fallback": "create_date",
+  "deadline_field": "cp_deadline",
+  "owner_field": "cp_owner_id",
+  "surcharge_field": "extra_charge_pct",
+  "link_field": "task_id",
+  "customer_product_filter": [
+    [
+      "supplier_id",
+      "=",
+      false
+    ]
+  ],
+  "no_customer_products_field": "cp_no_customer_products",
+  "status_field": "cp_workflow_status",
+  "status_done_value": "completed"
+}
