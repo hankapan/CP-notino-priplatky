@@ -220,7 +220,6 @@ function Get-SlackMessage {
     }
     [void]$L.Add('')
     [void]$L.Add('_Pravidlo: tentýž den 80 %, 1 pracovní den 50 %, 2 pracovní dny 30 %, jinak 0 %._')
-    [void]$L.Add('_Pracovní dny bez víkendů a českých státních svátků._')
     return ($L -join "`n")
 }
 

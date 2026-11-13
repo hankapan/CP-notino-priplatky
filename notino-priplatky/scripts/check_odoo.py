@@ -168,8 +168,7 @@ def slack_text(rows, start, end):
             L.append("_Jiné procento, než pravidlo zná – prosím o konzultaci._ %s" % tag(r))
         else:
             L.append("%s prosím o úpravu." % tag(r))
-    L += ["", "_Pravidlo: tentýž den 80 %, 1 pracovní den 50 %, 2 pracovní dny 30 %, jinak 0 %._",
-          "_Pracovní dny bez víkendů a českých státních svátků._"]
+    L += ["", "_Pravidlo: tentýž den 80 %, 1 pracovní den 50 %, 2 pracovní dny 30 %, jinak 0 %._"]
     return NL.join(L)
 
 
