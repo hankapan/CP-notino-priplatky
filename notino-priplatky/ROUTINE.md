@@ -29,14 +29,14 @@ Nikdy nevypisuj hodnoty proměnných prostředí. Vůči Odoo jen čti.
 3. Pokud action = "skip": napiš jednu větu "Dnes se nic nekontroluje." a skonči.
 
 4. Pokud action = "main":
-   a) python notino-priplatky/scripts/check_odoo.py --start <start> --end <end> --json vysledek.json
+   a) python notino-priplatky/scripts/check_odoo.py --start <start> --end <end> --json /tmp/vysledek.json
       (start a end vezmi z výstupu schedule_day.py)
-   b) python notino-priplatky/scripts/check_odoo.py --from-json vysledek.json
+   b) python notino-priplatky/scripts/check_odoo.py --from-json /tmp/vysledek.json
       Vygeneruje text hlášení včetně označení správců.
    c) Pošli text do Slack kanálu #notino (C4CKL4D37) přes slack_send_message.
       Když nejsou žádné odchylky, pošli krátkou zprávu, že kontrola proběhla a vše je v pořádku.
       Z odpovědi si ulož ts zprávy.
-   d) python notino-priplatky/scripts/followup.py save --json vysledek.json --channel C4CKL4D37 --ts <ts>
+   d) python notino-priplatky/scripts/followup.py save --json /tmp/vysledek.json --channel C4CKL4D37 --ts <ts>
    e) Ulož snímek na větev claude/notino-data (nepushuj do main):
       cp notino-priplatky/data/hlaseni_*.json /tmp/
       git fetch origin
@@ -46,10 +46,18 @@ Nikdy nevypisuj hodnoty proměnných prostředí. Vůči Odoo jen čti.
       git push -u origin claude/notino-data
       git checkout main
       Nic jiného do repozitáře nepřidávej.
+      POKUD PUSH SELŽE (jakákoli chyba, např. 403): hlášení v #notino už odešlo, takže nic dalšího
+      do #notino neposílej. Pošli přes slack_send_message soukromou zprávu na Slack ID U0456SGLEUT:
+      "Notino příplatky: hlášení za <start>–<end> odešlo, ale snímek se nepodařilo uložit do GitHubu
+      (<přesná chyba>). Návazná kontrola bude bez snímku. Zkontroluj přístup Claude k repozitáři
+      hankapan/CP-notino-priplatky." Nic neobcházej.
 
 5. Pokud action = "followup":
    a) git fetch origin claude/notino-data && git checkout origin/claude/notino-data -- notino-priplatky/data
       python notino-priplatky/scripts/followup.py check --slack-text
+      POKUD větev nebo snímek neexistuje (fetch/checkout selže nebo check hlásí "Zadny snimek"):
+      pošli soukromou zprávu na Slack ID U0456SGLEUT: "Notino příplatky: návazná kontrola neproběhla,
+      chybí snímek hlášení (<přesná chyba>)." Do #notino nic neposílej a skonči.
    b) Pošli vygenerovaný text do #notino (C4CKL4D37), pokud obsahuje nějaké neopravené zakázky;
       jinak krátce potvrď, že vše bylo opraveno.
 
